@@ -25,7 +25,7 @@
     <Compile Include="Text_Preprocessing\Corpus.py" />
     <Compile Include="Text_Preprocessing\Re.py" />
     <Compile Include="Text_Preprocessing\Stem.py" />
-    <Compile Include="Text_Preprocessing\Text_Preprocessing.py" />
+    <Compile Include="Text_Preprocessing\text_preprocessing.py" />
     <Compile Include="Text_Preprocessing\Tokenize.py" />
     <Compile Include="Text_Preprocessing\__init__.py" />
   </ItemGroup>
