@@ -1,9 +1,13 @@
 # text_preprocessing.py
 
+import nltk
 from .Corpus import NLTKCorpora
 from .Re import Regex
 from .Stem import Stemmer
 from .Tokenize import Tokenizer
+
+# Ensure the necessary data for POS tagging is downloaded
+nltk.download('averaged_perceptron_tagger')
 
 class TextPreprocessing:
     def __init__(self):
@@ -13,35 +17,35 @@ class TextPreprocessing:
         self.tokenizer = Tokenizer()
 
     def preprocess_text(self, text):
-        # Tokenizzazione delle frasi
+        # Sentence tokenization
         sentences = self.tokenizer.sent_tokenize(text)
         print("Sentences:", sentences)
 
-        # Tokenizzazione delle parole
+        # Word tokenization
         words = self.tokenizer.word_tokenize(text)
         print("Words:", words)
 
-        # Tokenizzazione con regex
+        # Regex tokenization
         regex_words = self.tokenizer.regex_tokenize(text)
         print("Regex Words:", regex_words)
 
-        # Tokenizzazione con whitespace
+        # Whitespace tokenization
         whitespace_words = self.tokenizer.whitespace_tokenize(text)
         print("Whitespace Words:", whitespace_words)
 
-        # Stemming con Porter
+        # Porter stemming
         porter_stems = [self.stemmer.porter_stem(word) for word in words]
         print("Porter Stems:", porter_stems)
 
-        # Stemming con Lancaster
+        # Lancaster stemming
         lancaster_stems = [self.stemmer.lancaster_stem(word) for word in words]
         print("Lancaster Stems:", lancaster_stems)
 
-        # Stemming con Snowball
+        # Snowball stemming
         snowball_stems = [self.stemmer.snowball_stem(word) for word in words]
         print("Snowball Stems:", snowball_stems)
 
-        # Lemmatizzazione
+        # Lemmatization
         lemmas = [self.stemmer.lemmatize(word) for word in words]
         print("Lemmas:", lemmas)
 
@@ -56,6 +60,10 @@ class TextPreprocessing:
         print("Bigrams:", bigrams)
         print("Trigrams:", trigrams)
 
+        # Syntactic analysis (POS tagging)
+        pos_tags = self.pos_tagging(words)
+        print("POS Tags:", pos_tags)
+
         return {
             "sentences": sentences,
             "words": words,
@@ -67,12 +75,17 @@ class TextPreprocessing:
             "lemmas": lemmas,
             "filtered_words": filtered_words,
             "bigrams": bigrams,
-            "trigrams": trigrams
+            "trigrams": trigrams,
+            "pos_tags": pos_tags
         }
 
-# Esempio di utilizzo della classe TextPreprocessing
+    def pos_tagging(self, words):
+        return nltk.pos_tag(words)
+
+# Example usage of the TextPreprocessing class
 if __name__ == "__main__":
-    text = "This is a sentence. And this is another one."
+    text = "Hi, this is not a sentence, and neither a word"
     preprocessor = TextPreprocessing()
     result = preprocessor.preprocess_text(text)
-    print(result)
+    print("Final Result:", result)
+

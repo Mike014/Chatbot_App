@@ -2,7 +2,6 @@ import nltk
 import nltk.corpus as corpus
 from nltk.corpus import stopwords
 
-# Scarica tutte le risorse necessarie
 nltk.download('all')
 
 class NLTKCorpora:
