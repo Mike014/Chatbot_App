@@ -54,3 +54,4 @@ $RECYCLE.BIN/
 # JetBrains Rider
 .idea/
 *.sln.iml
+__pycache__/
