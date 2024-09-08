@@ -3,6 +3,9 @@
 import sys
 import os
 import tkinter as tk
+import pickle
+
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'Text_Preprocessing')))
 
@@ -31,24 +34,46 @@ class Chatbot:
         max_length = 10
         self.neural_model = NeuralModel(vocab_size, embedding_dim, max_length)
         
-        # Example training data
-        texts = [
-            "This is an example of document.", 
-            "This is another one",
-            "Yet another example document.",
-            "More examples to train the model.",
-            "This is a positive example.",
-            "This is a negative example.",
-            "Positive example here.",
-            "Negative example here."
-        ]
-        labels = [0, 1, 0, 1, 1, 0, 1, 0]  # Example labels
-        
-        # Train the BagOfWords model
-        self.bow.fit(texts)
-        
-        # Train the neural model
-        self.neural_model.fit(texts, labels, epochs=10, batch_size=2)
+        # Load or train the models
+        self.load_or_train_models()
+
+    def load_or_train_models(self):
+        try:
+            # Check if the models are already saved
+            if os.path.exists('bow_model.pkl') and os.path.exists('neural_model.weights.h5'):
+                # Load the BagOfWords model
+                with open('bow_model.pkl', 'rb') as f:
+                    self.bow = pickle.load(f)
+                # Load the NeuralModel
+                self.neural_model.load_weights('neural_model.weights.h5')
+            else:
+                raise ValueError("Models not found, training new models.")
+        except Exception as e:
+            print(f"Error loading models: {e}")
+            print("Training new models...")
+            # Example training data
+            texts = [
+                "This is an example of document.", 
+                "This is another one",
+                "Yet another example document.",
+                "More examples to train the model.",
+                "This is a positive example.",
+                "This is a negative example.",
+                "Positive example here.",
+                "Negative example here."
+            ]
+            labels = [0, 1, 0, 1, 1, 0, 1, 0]  # Example labels
+            
+            # Train the BagOfWords model
+            self.bow.fit(texts)
+            
+            # Train the neural model
+            self.neural_model.fit(texts, labels, epochs=10, batch_size=2)
+            
+            # Save the models
+            with open('bow_model.pkl', 'wb') as f:
+                pickle.dump(self.bow, f)
+            self.neural_model.save_weights('neural_model.weights.h5')
 
     def clear(self):
         # Clear the content of the text area

@@ -8,7 +8,7 @@ sys.stdout.reconfigure(encoding='utf-8')
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Embedding, LSTM, GRU, Dense, Dropout, Bidirectional
+from tensorflow.keras.layers import Embedding, LSTM, Dense, Dropout, Bidirectional
 from tensorflow.keras.regularizers import l2
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 from sklearn.metrics import precision_score, recall_score, f1_score
@@ -35,12 +35,15 @@ class NeuralModel:
             Embedding(vocab_size, embedding_dim, input_length=max_length),
             Bidirectional(LSTM(64, return_sequences=True, kernel_regularizer=l2(0.01))),
             Dropout(0.5),
-            Bidirectional(GRU(32, return_sequences=True, kernel_regularizer=l2(0.01))),
+            Bidirectional(LSTM(32, return_sequences=True, kernel_regularizer=l2(0.01))),
             Dropout(0.5),
             LSTM(16, kernel_regularizer=l2(0.01)),
             Dropout(0.5),
             Dense(1, activation='sigmoid', kernel_regularizer=l2(0.01))
         ])
+        
+        # Build the model with the input shape
+        self.model.build(input_shape=(None, max_length))
         
         # Compile the model with binary cross-entropy loss and Adam optimizer
         self.model.compile(loss='binary_crossentropy', optimizer=tf.keras.optimizers.Adam(learning_rate=0.001), metrics=['accuracy'])
@@ -158,6 +161,16 @@ class NeuralModel:
         print(f'Recall: {recall:.4f}')
         print(f'F1 Score: {f1:.4f}')
 
+    def save_weights(self, filepath):
+        """Salva i pesi del modello nel file specificato."""
+        self.model.save_weights(filepath)
+        print(f"Pesi salvati in {filepath}")
+
+    def load_weights(self, filepath):
+        """Carica i pesi del modello dal file specificato."""
+        self.model.load_weights(filepath)
+        print(f"Pesi caricati da {filepath}")
+
 # Example usage of the NeuralModel class
 if __name__ == "__main__":
     texts = [
@@ -177,6 +190,8 @@ if __name__ == "__main__":
 
     neural_model = NeuralModel(vocab_size, embedding_dim, max_length)
     neural_model.fit(texts, labels, epochs=10, batch_size=2)
+    neural_model.save_weights('neural_model.weights.h5')
+    neural_model.load_weights('neural_model.weights.h5')
     predictions = neural_model.predict(["This is a new example"])
     
     # Print predictions directly
