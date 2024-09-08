@@ -21,6 +21,9 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="language_models\bag_of_words.py" />
+    <Compile Include="language_models\neural_model.py" />
+    <Compile Include="language_models\__init__.py" />
     <Compile Include="main.py" />
     <Compile Include="Text_Preprocessing\Corpus.py" />
     <Compile Include="Text_Preprocessing\Re.py" />
@@ -30,6 +33,7 @@
     <Compile Include="Text_Preprocessing\__init__.py" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="language_models\" />
     <Folder Include="Text_Preprocessing\" />
     <Folder Include="Text_Preprocessing\__pycache__\" />
   </ItemGroup>

@@ -1,10 +1,10 @@
 # text_preprocessing.py
 
 import nltk
-from .Corpus import NLTKCorpora
-from .Re import Regex
-from .Stem import Stemmer
-from .Tokenize import Tokenizer
+from Text_Preprocessing.Corpus import NLTKCorpora
+from Text_Preprocessing.Re import Regex
+from Text_Preprocessing.Stem import Stemmer
+from Text_Preprocessing.Tokenize import Tokenizer
 
 # Ensure the necessary data for POS tagging is downloaded
 nltk.download('averaged_perceptron_tagger')
@@ -88,4 +88,3 @@ if __name__ == "__main__":
     preprocessor = TextPreprocessing()
     result = preprocessor.preprocess_text(text)
     print("Final Result:", result)
-
