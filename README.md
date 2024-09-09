@@ -104,4 +104,8 @@ python main.py
 - **Description**: Implements various text preprocessing techniques.
 - **Libraries**: `nltk`, `Text_Preprocessing.Corpus`, `Text_Preprocessing.Re`, `Text_Preprocessing.Stem`, `Text_Preprocessing.Tokenize`.
 
+## Screenshot
+
+![Screenshot](screenshots/screenshots.PNG)
+
 In summary, the chatbot takes a text input, preprocesses it, transforms it into a numerical representation, makes a prediction with a neural model, generates a response with DialoGPT, and displays the results to the user.
