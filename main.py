@@ -166,6 +166,7 @@ class Chatbot:
         # Generate response using DialoGPT
         response = self.generate_dialogpt_response(user_input)
         
+        self.text_area.insert(tk.END, f"User Input: {user_input}\n")
         self.text_area.insert(tk.END, f"Generated Response: {response}\n")
 
     def create_widgets(self):

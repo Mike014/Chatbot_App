@@ -8,7 +8,7 @@ class DialoGPTModel:
         self.model = AutoModelForCausalLM.from_pretrained(model_name)
         self.chat_history_ids = None
 
-    def generate_response(self, user_input, temperature=0.5, top_k=25, top_p=0.6):
+    def generate_response(self, user_input, temperature=0.8, top_k=25, top_p=1.6):
         # Tokenize the user's input
         new_user_input_ids = self.tokenizer.encode(user_input + self.tokenizer.eos_token, return_tensors='pt')
 
