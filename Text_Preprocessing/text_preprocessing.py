@@ -1,6 +1,7 @@
 # text_preprocessing.py
 
 import nltk
+import numpy as np
 from Text_Preprocessing.Corpus import NLTKCorpora
 from Text_Preprocessing.Re import Regex
 from Text_Preprocessing.Stem import Stemmer
@@ -19,65 +20,22 @@ class TextPreprocessing:
     def preprocess_text(self, text):
         # Sentence tokenization
         sentences = self.tokenizer.sent_tokenize(text)
-        print("Sentences:", sentences)
 
         # Word tokenization
         words = self.tokenizer.word_tokenize(text)
-        print("Words:", words)
 
-        # Regex tokenization
-        regex_words = self.tokenizer.regex_tokenize(text)
-        print("Regex Words:", regex_words)
+        # Example feature extraction: length of text, number of words, number of sentences
+        features = [
+            len(text),  # Length of the text
+            len(words),  # Number of words
+            len(sentences)  # Number of sentences
+        ]
 
-        # Whitespace tokenization
-        whitespace_words = self.tokenizer.whitespace_tokenize(text)
-        print("Whitespace Words:", whitespace_words)
+        # Ensure the features array has the expected number of features (e.g., 10)
+        while len(features) < 10:
+            features.append(0)  # Pad with zeros if necessary
 
-        # Porter stemming
-        porter_stems = [self.stemmer.porter_stem(word) for word in words]
-        print("Porter Stems:", porter_stems)
-
-        # Lancaster stemming
-        lancaster_stems = [self.stemmer.lancaster_stem(word) for word in words]
-        print("Lancaster Stems:", lancaster_stems)
-
-        # Snowball stemming
-        snowball_stems = [self.stemmer.snowball_stem(word) for word in words]
-        print("Snowball Stems:", snowball_stems)
-
-        # Lemmatization
-        lemmas = [self.stemmer.lemmatize(word) for word in words]
-        print("Lemmas:", lemmas)
-
-        # Stopwords
-        stopwords = self.corpora.get_all_stopwords()
-        filtered_words = [word for word in words if word.lower() not in stopwords]
-        print("Filtered Words:", filtered_words)
-
-        # N-grams
-        bigrams = list(self.tokenizer.ngrams(words, 2))
-        trigrams = list(self.tokenizer.ngrams(words, 3))
-        print("Bigrams:", bigrams)
-        print("Trigrams:", trigrams)
-
-        # Syntactic analysis (POS tagging)
-        pos_tags = self.pos_tagging(words)
-        print("POS Tags:", pos_tags)
-
-        return {
-            "sentences": sentences,
-            "words": words,
-            "regex_words": regex_words,
-            "whitespace_words": whitespace_words,
-            "porter_stems": porter_stems,
-            "lancaster_stems": lancaster_stems,
-            "snowball_stems": snowball_stems,
-            "lemmas": lemmas,
-            "filtered_words": filtered_words,
-            "bigrams": bigrams,
-            "trigrams": trigrams,
-            "pos_tags": pos_tags
-        }
+        return np.array(features)  # Return an array of numerical features
 
     def pos_tagging(self, words):
         return nltk.pos_tag(words)
@@ -88,3 +46,4 @@ if __name__ == "__main__":
     preprocessor = TextPreprocessing()
     result = preprocessor.preprocess_text(text)
     print("Final Result:", result)
+

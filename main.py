@@ -19,6 +19,7 @@ from text_generation.seq2seq_model import create_seq2seq_model
 from text_generation.word_embeddings import create_word_embeddings
 from text_generation.teacher_forcing import teacher_forcing
 from language_models.dialogpt_model import DialoGPTModel
+from ml_utils import MLUtils
 
 class Chatbot:
     def __init__(self, root):
@@ -56,6 +57,9 @@ class Chatbot:
         # Initialize the DialoGPT model
         self.dialogpt_model = DialoGPTModel()
         
+        # Initialize MLUtils
+        self.ml_utils = MLUtils()
+        
         # Load or train the models
         self.load_or_train_models()
 
@@ -73,6 +77,8 @@ class Chatbot:
                 # Load the word tokenizer
                 with open('word_tokenizer.pkl', 'rb') as f:
                     self.word_tokenizer = pickle.load(f)
+                # Load the ML models
+                self.ml_utils.load_models()
             else:
                 raise ValueError("Models not found, training new models.")
         except Exception as e:
@@ -88,7 +94,8 @@ class Chatbot:
                 "Why did the chicken cross the road?",
                 "To get to the other side."
             ]
-            labels = [0, 1, 0, 1, 1, 0, 1, 0]  # Example labels
+            # Example labels
+            labels = [0, 1, 0, 1, 1, 0, 1, 0]  
             
             # Train the BagOfWords model
             self.bow.fit(texts)
@@ -107,9 +114,13 @@ class Chatbot:
                 return
             
             # Train the Seq2Seq model
-            input_data = np.random.rand(8, 5, 10)  # Random input data
-            target_data = np.random.rand(8, 5, 10)  # Random target data
+            input_data = np.random.rand(8, 5, 10) 
+            target_data = np.random.rand(8, 5, 10)  
             teacher_forcing(self.seq2seq_model, input_data, target_data, epochs=10, batch_size=2)
+            
+            # Train the KNN model
+            features, labels = self.load_training_data()
+            self.ml_utils.train_knn(features, labels)
             
             # Save the models
             with open('bow_model.pkl', 'wb') as f:
@@ -118,13 +129,21 @@ class Chatbot:
             self.seq2seq_model.save_weights('seq2seq_model.weights.h5')
             with open('word_tokenizer.pkl', 'wb') as f:
                 pickle.dump(self.word_tokenizer, f)
+            self.ml_utils.save_models()
+
+    def load_training_data(self):
+        # Carica i dati di addestramento qui
+        # Questo è solo un esempio, sostituisci con il tuo metodo di caricamento dei dati
+        features = np.random.rand(100, 10)
+        labels = np.random.randint(0, 2, 100)
+        return features, labels
 
     def clear(self):
         self.entry.delete(0, tk.END)
         self.text_area.delete(1.0, tk.END)
 
     def decode_sequence(self, input_seq, max_length):
-        decoder_input = np.zeros((1, 1, 10))  # Dimensione corretta
+        decoder_input = np.zeros((1, 1, 10)) 
         decoded_sentence = ''
         stop_condition = False
         sampled_word = ''
@@ -142,7 +161,7 @@ class Chatbot:
             else:
                 decoded_sentence += ' ' + sampled_word
             
-            decoder_input = np.zeros((1, 1, 10))  # Dimensione corretta
+            decoder_input = np.zeros((1, 1, 10))  
             decoder_input[0, 0, sampled_token_index] = 1.0
             
             if stop_condition:
@@ -152,6 +171,13 @@ class Chatbot:
 
     def generate_dialogpt_response(self, user_input):
         return self.dialogpt_model.generate_response(user_input)
+
+    def predict_knn_response(self, user_input):
+        # Preprocess the user's input
+        features = self.preprocessor.preprocess_text(user_input)
+        features = np.array(features).reshape(1, -1)  # Assicurati che sia un array 2D
+        predictions = self.ml_utils.predict_knn(features)
+        return predictions
 
     def process_text(self):
         user_input = self.entry.get()
@@ -166,8 +192,12 @@ class Chatbot:
         # Generate response using DialoGPT
         response = self.generate_dialogpt_response(user_input)
         
+        # KNN prediction
+        knn_prediction = self.predict_knn_response(user_input)
+        
         self.text_area.insert(tk.END, f"User Input: {user_input}\n")
         self.text_area.insert(tk.END, f"Generated Response: {response}\n")
+        # self.text_area.insert(tk.END, f"KNN Prediction: {knn_prediction}\n")
 
     def create_widgets(self):
         self.label = tk.Label(self.root, text="Welcome to Chatbot")
