@@ -25,6 +25,10 @@
     <Compile Include="language_models\neural_model.py" />
     <Compile Include="language_models\__init__.py" />
     <Compile Include="main.py" />
+    <Compile Include="text_generation\teacher_forcing.py" />
+    <Compile Include="text_generation\seq2seq_model.py" />
+    <Compile Include="text_generation\test.py" />
+    <Compile Include="text_generation\word_embeddings.py" />
     <Compile Include="text_generation\__init__.py" />
     <Compile Include="Text_Preprocessing\Corpus.py" />
     <Compile Include="Text_Preprocessing\Re.py" />
